@@ -2,8 +2,6 @@
 
 namespace Sevaske\PayfortApi\Exceptions;
 
-use Throwable;
-
 class PayfortInvalidRequestException extends PayfortRequestException
 {
     public function __construct(string $message = "Invalid request.", array $payload = [])

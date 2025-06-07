@@ -11,15 +11,21 @@ class PayfortSignatureException extends PayfortException
         string $actualSignature,
         string $shaPhrase,
         string $shaType = 'sha256',
+        ?\Throwable $previous = null
     )
     {
-        parent::__construct($message, [
-            'payload' => $payload,
-            'expected_signature' => $expectedSignature,
-            'actual_signature' => $actualSignature,
-            'sha_phrase' => $shaPhrase,
-            'sha_type' => $shaType,
-        ]);
+        parent::__construct(
+            $message,
+            [
+                'payload' => $payload,
+                'expected_signature' => $expectedSignature,
+                'actual_signature' => $actualSignature,
+                'sha_phrase' => $shaPhrase,
+                'sha_type' => $shaType,
+            ],
+            0,
+            $previous
+        );
     }
 
     public function getPayload(): array
