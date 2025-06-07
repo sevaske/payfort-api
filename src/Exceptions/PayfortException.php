@@ -6,7 +6,7 @@ use Sevaske\PayfortApi\Interfaces\PayfortExceptionInterface;
 
 class PayfortException extends \Exception implements PayfortExceptionInterface
 {
-    public function __construct(string $message = "", protected array $context = [])
+    public function __construct(string $message = "", protected array $context = [], int $code = 0, ?\Throwable $previous = null)
     {
         parent::__construct($message);
     }
@@ -18,7 +18,7 @@ class PayfortException extends \Exception implements PayfortExceptionInterface
         return $this;
     }
 
-    public function getContext(): array
+    public function context(): array
     {
         return $this->context;
     }
