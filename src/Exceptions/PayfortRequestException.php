@@ -6,9 +6,9 @@ use Throwable;
 
 class PayfortRequestException extends PayfortException
 {
-    public function __construct(string $message = "An error occurred while processing the payfort request.", array $payload = [])
+    public function __construct(string $message = '', array $payload = [], ?\Throwable $previous = null)
     {
         $context = $payload ? ['payload' => $payload] : [];
-        parent::__construct($message, $context);
+        parent::__construct($message, $context, (int) $previous?->getCode(), $previous);
     }
 }

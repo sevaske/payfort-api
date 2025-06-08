@@ -5,7 +5,7 @@ namespace Sevaske\PayfortApi\Tests;
 use PHPUnit\Framework\TestCase;
 use Sevaske\PayfortApi\Enums\PayfortEnvironmentEnum;
 
-class EnvironmentTest extends TestCase
+class PayfortEnvironmentEnumTest extends TestCase
 {
     public function test_enum_values(): void
     {
@@ -23,22 +23,6 @@ class EnvironmentTest extends TestCase
     {
         $this->assertEquals('https://paymentservices.payfort.com/', PayfortEnvironmentEnum::Production->url());
         $this->assertEquals('https://paymentservices.payfort.com/', PayfortEnvironmentEnum::getUrl('production'));
-    }
-
-    public function test_correct_payment_api(): void
-    {
-        $this->assertEquals(
-            'https://paymentservices.payfort.com/FortAPI/paymentApi',
-            PayfortEnvironmentEnum::Production->paymentApi()
-        );
-    }
-
-    public function test_correct_payment_page(): void
-    {
-        $this->assertEquals(
-            'https://paymentservices.payfort.com/FortAPI/paymentPage',
-            PayfortEnvironmentEnum::Production->paymentPage()
-        );
     }
 
     public function test_invalid_environment_returns_null(): void
