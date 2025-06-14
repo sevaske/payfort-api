@@ -19,13 +19,18 @@ class ApiResponse implements ApiResponseInterface
     /**
      * Constructs the ApiResponse object by parsing a PSR-7 response into attributes.
      *
-     * @param ResponseInterface $response The original PSR-7 HTTP response.
+     * @param ResponseInterface|array $response The original PSR-7 HTTP response OR array.
      *
      * @throws PayfortResponseException If the response body cannot be parsed as valid JSON.
      */
-    public function __construct(protected ResponseInterface $response)
+    public function __construct(protected ResponseInterface|array $response)
     {
-        $this->attributes = self::parse($response);
+        if ($response instanceof ResponseInterface) {
+            $this->attributes = self::parse($response);
+        } else {
+            $this->attributes = $this->response;
+        }
+
         $this->readOnlyAttributes = true;
     }
 

@@ -78,25 +78,30 @@ trait RequestBuilder
      * @param array $payload The request payload.
      * @param callable|array|string|null $callback The callback to execute.
      *
-     * @return ApiResponseInterface The response data.
+     * @return mixed The response data OR when you pass a callback, you must return something inside.
      *
      * @throws PayfortSignatureException If signature validation fails.
      * @throws PayfortRequestException If the request fails.
      * @throws PayfortException If the callback is invalid or execution fails.
      */
-    public function request(array $payload, callable|array|string|null $callback = null): ApiResponseInterface
+    public function request(array $payload, callable|array|string|null $callback = null): mixed
     {
         $requestPayload = $this->signRequestPayload($payload);
-        $rawResponse = $this->rawRequest([
-            'headers' => [
-                'Content-Type' => 'application/json',
+        $rawResponse = $this->rawRequest(
+            [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => $requestPayload,
             ],
-            'json' => $requestPayload,
-        ], 'POST', '/FortAPI/paymentApi');
+            'POST',
+            '/FortAPI/paymentApi'
+        );
+
         $response = new ApiResponse($rawResponse);
 
         if ($callback) {
-            self::executeCallback($callback, $requestPayload, $response);
+            return self::executeCallback($callback, $requestPayload, $response);
         }
 
         return $response;
@@ -143,7 +148,7 @@ trait RequestBuilder
         callable|array|string $callback,
         array $request,
         ApiResponseInterface|ResponseInterface|array $response
-    ): void
+    ): mixed
     {
         // if it's an array, ensure it is a valid class-method pair
         if (is_array($callback)) {
@@ -171,7 +176,7 @@ trait RequestBuilder
             }
 
             // execute the callback
-            $callback($request, $response);
+            return $callback($request, $response);
         } catch (Throwable $e) {
             throw new PayfortRequestException(
                 'Callback execution failed: ' . $e->getMessage(),
@@ -181,5 +186,23 @@ trait RequestBuilder
                 $e
             );
         }
+    }
+
+    /**
+     * Removes null values from request data.
+     */
+    protected function filterPayload(array $payload): array
+    {
+        return array_filter($payload, fn ($value) => $value !== null);
+    }
+
+    protected function prepareApiRequestOptions(array $payload): array
+    {
+        return [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'json' => $payload,
+        ];
     }
 }
