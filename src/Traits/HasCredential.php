@@ -4,7 +4,7 @@ namespace Sevaske\PayfortApi\Traits;
 
 use Sevaske\PayfortApi\Interfaces\CredentialInterface;
 
-trait HasCredentialTrait
+trait HasCredential
 {
     protected CredentialInterface $credential;
 

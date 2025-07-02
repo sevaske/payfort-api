@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Sevaske\PayfortApi\Exceptions\PayfortResponseException;
-use Sevaske\PayfortApi\Http\ApiResponse;
+use Sevaske\PayfortApi\Http\Response;
 
 class ApiResponseTest extends TestCase
 {
@@ -14,7 +14,7 @@ class ApiResponseTest extends TestCase
     {
         $response = $this->mockResponse(['status' => 'success', 'amount' => 100]);
 
-        $apiResponse = new ApiResponse($response);
+        $apiResponse = new Response($response);
 
         $this->assertEquals('success', $apiResponse->status);
         $this->assertEquals('success', $apiResponse['status']);
@@ -24,7 +24,7 @@ class ApiResponseTest extends TestCase
     public function test_to_array_and_json_serialize_are_identical(): void
     {
         $response = $this->mockResponse(['foo' => 'bar']);
-        $apiResponse = new ApiResponse($response);
+        $apiResponse = new Response($response);
 
         $this->assertEquals(['foo' => 'bar'], $apiResponse->jsonSerialize());
     }
@@ -32,7 +32,7 @@ class ApiResponseTest extends TestCase
     public function test_raw_returns_original_response(): void
     {
         $response = $this->mockResponse(['check' => 'ok']);
-        $apiResponse = new ApiResponse($response);
+        $apiResponse = new Response($response);
 
         $this->assertSame($response, $apiResponse->raw());
     }
@@ -53,7 +53,7 @@ class ApiResponseTest extends TestCase
         $response->method('getStatusCode')
             ->willReturn(400);
 
-        new ApiResponse($response); // should throw
+        new Response($response); // should throw
     }
 
     public function test_parses_valid_json_response(): void
@@ -64,7 +64,7 @@ class ApiResponseTest extends TestCase
         $response = $this->createMock(ResponseInterface::class);
         $response->method('getBody')->willReturn($stream);
 
-        $result = ApiResponse::parse($response);
+        $result = Response::parse($response);
 
         $this->assertIsArray($result);
         $this->assertEquals('success', $result['status']);
@@ -82,7 +82,7 @@ class ApiResponseTest extends TestCase
         $response->method('getBody')->willReturn($stream);
         $response->method('getStatusCode')->willReturn(400);
 
-        ApiResponse::parse($response);
+        Response::parse($response);
     }
 
     private function mockResponse(array $bodyArray): ResponseInterface

@@ -17,24 +17,33 @@ use Sevaske\PayfortApi\Http\Responses\RefundResponse;
 use Sevaske\PayfortApi\Http\Responses\UpdateTokenResponse;
 use Sevaske\PayfortApi\Http\Responses\VoidAuthorizationResponse;
 use Sevaske\PayfortApi\Interfaces\CredentialInterface;
-use Sevaske\PayfortApi\Traits\HasCredentialTrait;
+use Sevaske\PayfortApi\Interfaces\HasCredentialInterface;
+use Sevaske\PayfortApi\Traits\HasCredential;
 use Sevaske\PayfortApi\Traits\RequestBuilder;
 
-class ApiRequest
+class Api implements HasCredentialInterface
 {
-    use HasCredentialTrait;
+    use HasCredential;
     use RequestBuilder;
-
-    protected PayfortEnvironmentEnum $environment;
 
     /**
      * Initialize the API request with an HTTP client and credentials.
      *
+     * @param PayfortEnvironmentEnum|string $environment The environment to make requests (production|sandbox).
      * @param ClientInterface $httpClient The HTTP client for sending requests.
      * @param CredentialInterface $credential The credential instance for authentication and signing requests.
      */
-    public function __construct(ClientInterface $httpClient, CredentialInterface $credential)
+    public function __construct(
+        PayfortEnvironmentEnum|string $environment,
+        ClientInterface $httpClient, 
+        CredentialInterface $credential,
+    )
     {
+        if (is_string($environment)) {
+            $environment = PayfortEnvironmentEnum::from($environment);
+        }
+
+        $this->baseUrl = $environment->url();
         $this->httpClient = $httpClient;
         $this->credential = $credential;
     }
@@ -49,7 +58,7 @@ class ApiRequest
      */
     public function checkStatus(
         ?string $merchantReference,
-        ?int $fortId,
+        ?int $fortId = null,
         string $language = 'en',
         array $extra = [],
         string|bool|null $returnThirdPartyResponseCodes = null,
@@ -86,7 +95,7 @@ class ApiRequest
      * @throws PayfortSignatureException
      * @throws PayfortResponseException
      */
-    public function purchase(
+    public function recurring(
         string $merchantReference,
         string $tokenName,
         string $customerEmail,
@@ -118,7 +127,7 @@ class ApiRequest
     }
 
     /**
-     * @see https://docs.payfort.com/docs/api/build/index.html#refund-operation
+     * @see https://docs.payfort.com/docs/api/build/index.html#refund-operation-request
      *
      * @throws PayfortRequestException
      * @throws PayfortSignatureException
@@ -143,7 +152,7 @@ class ApiRequest
                 'merchant_reference' => $merchantReference,
                 'maintenance_reference' => $maintenanceReference,
                 'fort_id' => $fortId,
-                'order_description' => $orderDescription
+                'order_description' => $orderDescription,
             ]),
         ]);
         $rawResponse = $this->rawRequest($this->prepareApiRequestOptions($requestPayload));

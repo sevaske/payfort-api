@@ -8,8 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use ReflectionFunction;
 use ReflectionMethod;
 use Sevaske\PayfortApi\Exceptions\PayfortException;
-use Sevaske\PayfortApi\Http\ApiResponse;
-use Sevaske\PayfortApi\Interfaces\ApiResponseInterface;
+use Sevaske\PayfortApi\Http\Response;
+use Sevaske\PayfortApi\Interfaces\PayfortResponseInterface;
 use Sevaske\PayfortApi\Interfaces\HasCredentialInterface;
 use Sevaske\PayfortApi\Exceptions\PayfortRequestException;
 use Sevaske\PayfortApi\Exceptions\PayfortSignatureException;
@@ -24,6 +24,11 @@ use Throwable;
  */
 trait RequestBuilder
 {
+    /**
+     * @var string Base API url.
+     */
+    private string $baseUrl;
+
     /**
      * HTTP client instance for sending requests.
      *
@@ -45,7 +50,7 @@ trait RequestBuilder
      * Send a raw request without processing the response.
      *
      * @param array $options Additional request options.
-     * @param string $uri The endpoint URI.
+     * @param ?string $uri The endpoint URI. Pass null to set by default: $this->baseUrl.'FortAPI/paymentApi'
      * @param string $method The HTTP method (e.g., GET, POST).
      *
      * @return ResponseInterface The raw API response.
@@ -54,9 +59,13 @@ trait RequestBuilder
      */
     public function rawRequest(
         array $options = [],
-        string $uri = '/FortAPI/paymentApi',
+        ?string $uri = null,
         string $method = 'POST',
     ): ResponseInterface {
+        if (! $uri) {
+            $uri = $this->baseUrl.'FortAPI/paymentApi';
+        }
+
         try {
             return $this->httpClient()->request($method, $uri, $options);
         } catch (ClientExceptionInterface $e) {
@@ -94,11 +103,9 @@ trait RequestBuilder
                 ],
                 'json' => $requestPayload,
             ],
-            'POST',
-            '/FortAPI/paymentApi'
         );
 
-        $response = new ApiResponse($rawResponse);
+        $response = new Response($rawResponse);
 
         if ($callback) {
             return self::executeCallback($callback, $requestPayload, $response);
@@ -140,14 +147,14 @@ trait RequestBuilder
      *
      * @param callable|array|string $callback The callback to execute.
      * @param array $request The request payload.
-     * @param ApiResponseInterface|ResponseInterface|array $response The response payload.
+     * @param PayfortResponseInterface|ResponseInterface|array $response The response payload.
      *
      * @throws PayfortRequestException If the callback is invalid or execution fails.
      */
     protected static function executeCallback(
         callable|array|string $callback,
         array $request,
-        ApiResponseInterface|ResponseInterface|array $response
+        PayfortResponseInterface|ResponseInterface|array $response
     ): mixed
     {
         // if it's an array, ensure it is a valid class-method pair

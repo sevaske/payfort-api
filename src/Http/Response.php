@@ -5,14 +5,14 @@ namespace Sevaske\PayfortApi\Http;
 use Psr\Http\Message\ResponseInterface;
 use Sevaske\PayfortApi\Exceptions\PayfortResponseException;
 use Sevaske\PayfortApi\Exceptions\ReadOnlyAttributesException;
-use Sevaske\PayfortApi\Interfaces\ApiResponseInterface;
+use Sevaske\PayfortApi\Interfaces\PayfortResponseInterface;
 use Sevaske\PayfortApi\Traits\HasAttributes;
 
 /**
  * Represents a structured API response from Payfort, with dynamic and read-only attributes.
  * Provides array-style access and JSON serialization.
  */
-class ApiResponse implements ApiResponseInterface
+class Response implements PayfortResponseInterface
 {
     use HasAttributes;
 

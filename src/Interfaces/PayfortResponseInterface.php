@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Interface that guarantees array-style access and JSON serialization.
  */
-interface ApiResponseInterface extends ArrayAccess, JsonSerializable
+interface PayfortResponseInterface extends ArrayAccess, JsonSerializable
 {
     /**
      * Returns the original raw PSR-7 HTTP response object.
