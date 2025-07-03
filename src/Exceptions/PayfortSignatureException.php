@@ -6,11 +6,11 @@ class PayfortSignatureException extends PayfortException
 {
     public function __construct(
         string $message,
-        array $payload,
-        string $expectedSignature,
-        string $actualSignature,
-        string $shaPhrase,
-        string $shaType = 'sha256',
+        ?array $payload,
+        ?string $expectedSignature,
+        ?string $actualSignature,
+        ?string $shaPhrase,
+        ?string $shaType = 'sha256',
         ?\Throwable $previous = null
     )
     {
@@ -30,26 +30,26 @@ class PayfortSignatureException extends PayfortException
 
     public function getPayload(): array
     {
-        return $this->context['payload'] ?? [];
+        return $this->context['payload'] ?: [];
     }
 
     public function getExpectedSignature(): string
     {
-        return $this->context['expected_signature'] ?? '';
+        return $this->context['expected_signature'] ?: '';
     }
 
     public function getActualSignature(): string
     {
-        return $this->context['actual_signature'] ?? '';
+        return $this->context['actual_signature'] ?: '';
     }
 
     public function getShaPhrase(): string
     {
-        return $this->context['sha_phrase'] ?? '';
+        return $this->context['sha_phrase'] ?: '';
     }
 
     public function getShaType(): string
     {
-        return $this->context['sha_type'] ?? '';
+        return $this->context['sha_type'] ?: '';
     }
 }

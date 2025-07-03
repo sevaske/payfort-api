@@ -60,8 +60,8 @@ class Api implements HasCredentialInterface
         ?string $merchantReference,
         ?int $fortId = null,
         string $language = 'en',
-        array $extra = [],
         string|bool|null $returnThirdPartyResponseCodes = null,
+        array $extra = [],
         callable|array|string|null $callback = null,
     ): mixed {
         if (is_bool($returnThirdPartyResponseCodes)) {
@@ -80,6 +80,10 @@ class Api implements HasCredentialInterface
         ]);
         $rawResponse = $this->rawRequest($this->prepareApiRequestOptions($requestPayload));
         $response = new CheckStatusResponse($rawResponse);
+
+        // handle the invalid request status and verify signature
+        $this->catchInvalidStatus($response, $requestPayload);
+        $this->verifyResponseSignature($response);
 
         if ($callback) {
             return self::executeCallback($callback, $response, $requestPayload);
@@ -118,6 +122,10 @@ class Api implements HasCredentialInterface
         ]);
         $rawResponse = $this->rawRequest($this->prepareApiRequestOptions($requestPayload));
         $response = new RecurringResponse($rawResponse);
+
+        // handle the invalid request status and verify signature
+        $this->catchInvalidStatus($response, $requestPayload);
+        $this->verifyResponseSignature($response);
 
         if ($callback) {
             return self::executeCallback($callback, $response, $requestPayload);
@@ -158,6 +166,10 @@ class Api implements HasCredentialInterface
         $rawResponse = $this->rawRequest($this->prepareApiRequestOptions($requestPayload));
         $response = new RefundResponse($rawResponse);
 
+        // handle the invalid request status and verify signature
+        $this->catchInvalidStatus($response, $requestPayload);
+        $this->verifyResponseSignature($response);
+
         if ($callback) {
             return self::executeCallback($callback, $response, $requestPayload);
         }
@@ -196,6 +208,10 @@ class Api implements HasCredentialInterface
         ]);
         $rawResponse = $this->rawRequest($this->prepareApiRequestOptions($requestPayload));
         $response = new CreateTokenResponse($rawResponse);
+
+        // handle the invalid request status and verify signature
+        $this->catchInvalidStatus($response, $requestPayload);
+        $this->verifyResponseSignature($response);
 
         if ($callback) {
             return self::executeCallback($callback, $response, $requestPayload);
@@ -240,6 +256,10 @@ class Api implements HasCredentialInterface
         $rawResponse = $this->rawRequest($this->prepareApiRequestOptions($requestPayload));
         $response = new UpdateTokenResponse($rawResponse);
 
+        // handle the invalid request status and verify signature
+        $this->catchInvalidStatus($response, $requestPayload);
+        $this->verifyResponseSignature($response);
+
         if ($callback) {
             return self::executeCallback($callback, $response, $requestPayload);
         }
@@ -273,6 +293,10 @@ class Api implements HasCredentialInterface
         ]);
         $rawResponse = $this->rawRequest($this->prepareApiRequestOptions($requestPayload));
         $response = new VoidAuthorizationResponse($rawResponse);
+
+        // handle the invalid request status and verify signature
+        $this->catchInvalidStatus($response, $requestPayload);
+        $this->verifyResponseSignature($response);
 
         if ($callback) {
             return self::executeCallback($callback, $response, $requestPayload);

@@ -3,6 +3,7 @@
 namespace Sevaske\PayfortApi\Http;
 
 use Psr\Http\Message\ResponseInterface;
+use Sevaske\PayfortApi\Enums\PayfortStatusEnum;
 use Sevaske\PayfortApi\Exceptions\PayfortResponseException;
 use Sevaske\PayfortApi\Exceptions\ReadOnlyAttributesException;
 use Sevaske\PayfortApi\Interfaces\PayfortResponseInterface;
@@ -131,5 +132,10 @@ class Response implements PayfortResponseInterface
         }
 
         unset($this->attributes[$offset]);
+    }
+
+    public function invalidRequest(): bool
+    {
+        return $this->getOptionalAttribute('status') === PayfortStatusEnum::InvalidRequest->value;
     }
 }

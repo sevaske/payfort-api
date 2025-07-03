@@ -7,6 +7,7 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionFunction;
 use ReflectionMethod;
+use Sevaske\PayfortApi\Enums\PayfortStatusEnum;
 use Sevaske\PayfortApi\Exceptions\PayfortException;
 use Sevaske\PayfortApi\Http\Response;
 use Sevaske\PayfortApi\Interfaces\PayfortResponseInterface;
@@ -98,8 +99,11 @@ trait RequestBuilder
         $requestPayload = $this->signRequestPayload($payload);
         $requestOptions = $this->prepareApiRequestOptions($requestPayload);
         $rawResponse = $this->rawRequest($requestOptions);
-
         $response = new Response($rawResponse);
+
+        // handle the invalid request status and verify signature
+        $this->catchInvalidStatus($response, $requestPayload);
+        $this->verifyResponseSignature($response);
 
         if ($callback) {
             return self::executeCallback($callback, $response, $requestPayload);
@@ -205,5 +209,48 @@ trait RequestBuilder
             ],
             'json' => $payload,
         ];
+    }
+
+    /**
+     * @throws PayfortRequestException
+     */
+    protected function catchInvalidStatus(PayfortResponseInterface $response, array $request): void
+    {
+        if ($response['status'] === PayfortStatusEnum::InvalidRequest->value) {
+            throw (new PayfortRequestException('Invalid request.', $request))
+                ->withContext(['response' => $response->jsonSerialize()]);
+        }
+    }
+
+    /**
+     * @throws PayfortSignatureException
+     */
+    protected function verifyResponseSignature(PayfortResponseInterface $response): void
+    {
+        if (! $this instanceof HasCredentialInterface) {
+            return;
+        }
+
+        $shaPhrase = $this->credential()->shaResponsePhrase();
+        $shaType = $this->credential()->shaType();
+        $payload = $response->jsonSerialize();
+        $actualSignature = $response['signature'];
+        unset($payload['signature']);
+
+        $expectedSignature = (new Signature(
+            $shaPhrase,
+            $shaType,
+        ))->calculate($payload);
+
+        if ($expectedSignature !== $actualSignature) {
+            throw new PayfortSignatureException(
+                'Invalid signature in response.',
+                $payload,
+                $expectedSignature,
+                $actualSignature,
+                $shaPhrase,
+                $shaType,
+            );
+        }
     }
 }
