@@ -96,14 +96,8 @@ trait RequestBuilder
     public function request(array $payload, callable|array|string|null $callback = null): mixed
     {
         $requestPayload = $this->signRequestPayload($payload);
-        $rawResponse = $this->rawRequest(
-            [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ],
-                'json' => $requestPayload,
-            ],
-        );
+        $requestOptions = $this->prepareApiRequestOptions($requestPayload);
+        $rawResponse = $this->rawRequest($requestOptions);
 
         $response = new Response($rawResponse);
 

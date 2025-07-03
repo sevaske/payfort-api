@@ -12,9 +12,9 @@ use Psr\Http\Message\ResponseInterface;
 interface PayfortResponseInterface extends ArrayAccess, JsonSerializable
 {
     /**
-     * Returns the original raw PSR-7 HTTP response object.
+     * Returns the original raw PSR-7 HTTP response object OR array.
      *
-     * @return ResponseInterface The raw response.
+     * @return ResponseInterface|array The raw response.
      */
-    public function raw(): ResponseInterface;
+    public function raw(): ResponseInterface|array;
 }
