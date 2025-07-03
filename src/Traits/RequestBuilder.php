@@ -108,7 +108,7 @@ trait RequestBuilder
         $response = new Response($rawResponse);
 
         if ($callback) {
-            return self::executeCallback($callback, $requestPayload, $response);
+            return self::executeCallback($callback, $response, $requestPayload);
         }
 
         return $response;
@@ -146,15 +146,15 @@ trait RequestBuilder
      * Calls a given request callback function.
      *
      * @param callable|array|string $callback The callback to execute.
-     * @param array $request The request payload.
      * @param PayfortResponseInterface|ResponseInterface|array $response The response payload.
+     * @param array $request The request payload.
      *
      * @throws PayfortRequestException If the callback is invalid or execution fails.
      */
     protected static function executeCallback(
         callable|array|string $callback,
+        PayfortResponseInterface|ResponseInterface|array $response,
         array $request,
-        PayfortResponseInterface|ResponseInterface|array $response
     ): mixed
     {
         // if it's an array, ensure it is a valid class-method pair
@@ -183,7 +183,7 @@ trait RequestBuilder
             }
 
             // execute the callback
-            return $callback($request, $response);
+            return $callback($response, $request);
         } catch (Throwable $e) {
             throw new PayfortRequestException(
                 'Callback execution failed: ' . $e->getMessage(),
