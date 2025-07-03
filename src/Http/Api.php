@@ -82,7 +82,7 @@ class Api implements HasCredentialInterface
         $response = new CheckStatusResponse($rawResponse);
 
         if ($callback) {
-            return self::executeCallback($callback, $requestPayload, $response);
+            return self::executeCallback($callback, $response, $requestPayload);
         }
 
         return $response;
@@ -120,7 +120,7 @@ class Api implements HasCredentialInterface
         $response = new RecurringResponse($rawResponse);
 
         if ($callback) {
-            return self::executeCallback($callback, $requestPayload, $response);
+            return self::executeCallback($callback, $response, $requestPayload);
         }
 
         return $response;
@@ -159,7 +159,7 @@ class Api implements HasCredentialInterface
         $response = new RefundResponse($rawResponse);
 
         if ($callback) {
-            return self::executeCallback($callback, $requestPayload, $response);
+            return self::executeCallback($callback, $response, $requestPayload);
         }
 
         return $response;
@@ -198,7 +198,7 @@ class Api implements HasCredentialInterface
         $response = new CreateTokenResponse($rawResponse);
 
         if ($callback) {
-            return self::executeCallback($callback, $requestPayload, $response);
+            return self::executeCallback($callback, $response, $requestPayload);
         }
 
         return $response;
@@ -241,7 +241,7 @@ class Api implements HasCredentialInterface
         $response = new UpdateTokenResponse($rawResponse);
 
         if ($callback) {
-            return self::executeCallback($callback, $requestPayload, $response);
+            return self::executeCallback($callback, $response, $requestPayload);
         }
 
         return $response;
@@ -275,7 +275,7 @@ class Api implements HasCredentialInterface
         $response = new VoidAuthorizationResponse($rawResponse);
 
         if ($callback) {
-            return self::executeCallback($callback, $requestPayload, $response);
+            return self::executeCallback($callback, $response, $requestPayload);
         }
 
         return $response;
