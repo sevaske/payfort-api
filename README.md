@@ -1,3 +1,6 @@
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/sevaske/zatca.svg?style=flat-square)](https://packagist.org/packages/sevaske/payfort-api)
+[![Total Downloads](https://img.shields.io/packagist/dt/sevaske/zatca.svg?style=flat-square)](https://packagist.org/packages/sevaske/payfort-api)
+
 # Payfort API PHP Client
 
 A simple and extensible PSR-18 compatible PHP client for working with [Amazon Payment Services (Payfort)](https://paymentservices.amazon.com/).
@@ -123,3 +126,17 @@ In the future, you will be able to handle redirection requests:
 ```php
 $merchant->redirection()->...; // Example of future functionality
 ```
+
+## 🧪 Testing
+
+```bash
+composer test
+```
+
+## 📜 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for recent changes.
+
+## ⚖ License
+
+MIT. See [LICENSE](LICENSE) for details.

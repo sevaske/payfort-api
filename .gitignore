@@ -1,3 +1,12 @@
-/.idea/*
-/vendor/
-/composer.lock
+# Composer Related
+composer.lock
+/vendor
+
+# Editors
+/.idea
+/.fleet
+/.vscode
+
+# Caches
+.phpunit.cache
+.phpunit.result.cache

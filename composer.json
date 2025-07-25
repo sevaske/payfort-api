@@ -10,7 +10,7 @@
     },
     "authors": [
         {
-            "name": "Sevak Mnatcakanian"
+            "name": "sevaske"
         }
     ],
     "require": {
@@ -22,7 +22,8 @@
     "require-dev": {
         "guzzlehttp/guzzle": "^7.9",
         "phpunit/phpunit": "^10.5",
-        "phpstan/phpstan": "^2.1"
+        "phpstan/phpstan": "^2.1",
+        "laravel/pint": "^1.20"
     },
     "prefer-stable": true
 }
