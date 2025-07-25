@@ -29,7 +29,7 @@ jobs:
         uses: ramsey/composer-install@v3
 
       - name: Fix PHP code style issues
-        uses: vendor/bin/pint --preset laravel
+        uses: aglipanci/laravel-pint-action@2.5
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v6
