@@ -34,5 +34,5 @@ jobs:
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v6
         with:
+          branch: main
           commit_message: Fix styling
-          branch: ${{ github.ref_name }}
