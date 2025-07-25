@@ -1,5 +1,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/sevaske/zatca.svg?style=flat-square)](https://packagist.org/packages/sevaske/payfort-api)
 [![Total Downloads](https://img.shields.io/packagist/dt/sevaske/zatca.svg?style=flat-square)](https://packagist.org/packages/sevaske/payfort-api)
+[![PHPUnit](https://github.com/sevaske/payfort-api/actions/workflows/run-tests.yml/badge.svg)](https://github.com/sevaske/payfort-api/actions/workflows/run-tests.yml)
+[![PHPStan](https://github.com/sevaske/payfort-api/actions/workflows/phpstan.yml/badge.svg)](https://github.com/sevaske/payfort-api/actions/workflows/phpstan.yml)
 
 # Payfort API PHP Client
 
