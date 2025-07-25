@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
 
       - name: Update Changelog
         uses: stefanzweifel/changelog-updater-action@v1
@@ -25,5 +27,6 @@ jobs:
       - name: Commit updated CHANGELOG
         uses: stefanzweifel/git-auto-commit-action@v6
         with:
+          branch: ${{ github.ref_name }}
           commit_message: Update CHANGELOG
           file_pattern: CHANGELOG.md
