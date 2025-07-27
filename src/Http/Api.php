@@ -6,12 +6,17 @@ use Psr\Http\Client\ClientInterface;
 use Sevaske\PayfortApi\Enums\PayfortApiEndpointEnum;
 use Sevaske\PayfortApi\Enums\PayfortEnvironmentEnum;
 use Sevaske\PayfortApi\Enums\PayfortPaymentEciEnum;
+use Sevaske\PayfortApi\Enums\PayfortPaymentOptionEnum;
+use Sevaske\PayfortApi\Enums\PayfortPurchaseCommandEnum;
+use Sevaske\PayfortApi\Enums\PayfortRecurringModeEnum;
 use Sevaske\PayfortApi\Exceptions\PayfortException;
 use Sevaske\PayfortApi\Exceptions\PayfortRequestException;
 use Sevaske\PayfortApi\Exceptions\PayfortResponseException;
 use Sevaske\PayfortApi\Exceptions\PayfortSignatureException;
+use Sevaske\PayfortApi\Http\Responses\AuthorizationResponse;
 use Sevaske\PayfortApi\Http\Responses\CheckStatusResponse;
 use Sevaske\PayfortApi\Http\Responses\CreateTokenResponse;
+use Sevaske\PayfortApi\Http\Responses\PurchaseResponse;
 use Sevaske\PayfortApi\Http\Responses\RecurringResponse;
 use Sevaske\PayfortApi\Http\Responses\RefundResponse;
 use Sevaske\PayfortApi\Http\Responses\UpdateTokenResponse;
@@ -303,5 +308,245 @@ class Api implements HasCredentialInterface
         }
 
         return $response;
+    }
+
+    /**
+     * @throws PayfortRequestException
+     * @throws PayfortResponseException
+     * @throws PayfortSignatureException
+     */
+    public function purchase(
+        string $merchantReference,
+        int $amount,
+        string $currency,
+        string $customerEmail,
+        string $language = 'en',
+        ?string $tokenName = null,
+        PayfortPaymentOptionEnum|string|null $paymentOption = null,
+        ?string $settlementReference = null,
+        ?string $orderDescription = null,
+        ?string $statementDescriptor = null,
+        ?string $customerIp = null,
+        ?string $customerName = null,
+        ?bool $rememberMe = null,
+        ?string $phoneNumber = null,
+        ?string $returnUrl = null,
+        ?string $agreementId = null,
+        PayfortRecurringModeEnum|string|null $recurringMode = null,
+        ?string $recurringTransactionsCount = null,
+        ?string $recurringExpiryDate = null,
+        ?string $recurringDaysBetweenPayments = null,
+        array $extra = [],
+        callable|array|string|null $callback = null,
+    )
+    {
+        $requestPayload = $this->prepareRedirectionPayload(
+            PayfortPurchaseCommandEnum::Purchase,
+            $merchantReference,
+            $amount,
+            $currency,
+            $customerEmail,
+            $language,
+            $tokenName,
+            $paymentOption,
+            $settlementReference,
+            $orderDescription,
+            $statementDescriptor,
+            $customerIp,
+            $customerName,
+            $rememberMe,
+            $phoneNumber,
+            $returnUrl,
+            $agreementId,
+            $recurringMode,
+            $recurringTransactionsCount,
+            $recurringExpiryDate,
+            $recurringDaysBetweenPayments,
+            $extra,
+        );
+        $rawResponse = $this->rawRequest($this->prepareApiRequestOptions($requestPayload));
+        $response = new PurchaseResponse($rawResponse);
+
+        // handle the invalid request status and verify signature
+        $this->catchInvalidStatus($response, $requestPayload);
+        $this->verifyResponseSignature($response);
+
+        if ($callback) {
+            return self::executeCallback($callback, $response, $requestPayload);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @throws PayfortRequestException
+     * @throws PayfortResponseException
+     * @throws PayfortSignatureException
+     */
+    public function authorization(
+        string $merchantReference,
+        int $amount,
+        string $currency,
+        string $customerEmail,
+        string $language = 'en',
+        ?string $tokenName = null,
+        PayfortPaymentOptionEnum|string|null $paymentOption = null,
+        ?string $settlementReference = null,
+        ?string $orderDescription = null,
+        ?string $statementDescriptor = null,
+        ?string $customerIp = null,
+        ?string $customerName = null,
+        ?bool $rememberMe = null,
+        ?string $phoneNumber = null,
+        ?string $returnUrl = null,
+        ?string $agreementId = null,
+        PayfortRecurringModeEnum|string|null $recurringMode = null,
+        ?string $recurringTransactionsCount = null,
+        ?string $recurringExpiryDate = null,
+        ?string $recurringDaysBetweenPayments = null,
+        array $extra = [],
+        callable|array|string|null $callback = null,
+    )
+    {
+        $requestPayload = $this->prepareRedirectionPayload(
+            PayfortPurchaseCommandEnum::Authorization,
+            $merchantReference,
+            $amount,
+            $currency,
+            $customerEmail,
+            $language,
+            $tokenName,
+            $paymentOption,
+            $settlementReference,
+            $orderDescription,
+            $statementDescriptor,
+            $customerIp,
+            $customerName,
+            $rememberMe,
+            $phoneNumber,
+            $returnUrl,
+            $agreementId,
+            $recurringMode,
+            $recurringTransactionsCount,
+            $recurringExpiryDate,
+            $recurringDaysBetweenPayments,
+            $extra,
+        );
+        $rawResponse = $this->rawRequest($this->prepareApiRequestOptions($requestPayload));
+        $response = new AuthorizationResponse($rawResponse);
+
+        // handle the invalid request status and verify signature
+        $this->catchInvalidStatus($response, $requestPayload);
+        $this->verifyResponseSignature($response);
+
+        if ($callback) {
+            return self::executeCallback($callback, $response, $requestPayload);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param PayfortPurchaseCommandEnum|string $command Authorization or Purchase
+     * @param string $merchantReference The merchant’s unique order number.
+     * @param int $amount The transaction’s amount. Example: 10000
+     * @param string $currency The currency of the transaction’s amount in ISO code 3.
+     * @param string $customerEmail
+     * @param string $language ONLY en|ar
+     * @param string|null $tokenName // The Token received from the Tokenization process.
+     * @param PayfortPaymentOptionEnum|string|null $paymentOption
+     * @param string|null $settlementReference The value is then passed to the acquiring bank and displayed to the
+     *     merchant in the acquirer settlement file.
+     * @param string|null $orderDescription
+     * @param string|null $statementDescriptor
+     * @param string|null $customerIp // IPv4 and IPv6 are supported.
+     * @param string|null $customerName
+     * @param bool|null $rememberMe This parameter provides you with an indication to whether to save this token for
+     *     the user based on the user selection.
+     * @param string|null $phoneNumber The customer’s phone number.
+     * @param string|null $returnUrl // The URL of the Merchant’s page that will be displayed to the customer when the
+     *     order is processed.
+     * @param string|null $agreementId // Identifier for the agreement with the payer to process payments to be used in
+     *     recurring payments.
+     * @param PayfortRecurringModeEnum|string|null $recurringMode // Indicates if the subsequent payments within the
+     *     agreement has same/different amount or unscheduled (unknown interval/amount).
+     * @param string|null $recurringTransactionsCount The number of merchant-initiated payments within the recurring
+     *     payment agreement. Required only if recurring_mode = VARIABLE or FIXED
+     * @param string|null $recurringExpiryDate // The date where the merchant needs to end the recurring, the format is
+     *     YYYY-MM-DD
+     * @param string|null $recurringDaysBetweenPayments The number of days between payments agreed with the payer under
+     *     your agreement with them.
+     * @param array $extra
+     *
+     * @return array
+     *
+     * @throws PayfortSignatureException
+     *
+     * @see https://paymentservices-reference.payfort.com/docs/api/build/index.html#authorization-purchase-request
+     *
+     */
+    protected function prepareRedirectionPayload(
+        PayfortPurchaseCommandEnum|string $command,
+        string $merchantReference,
+        int $amount,
+        string $currency,
+        string $customerEmail,
+        string $language = 'en',
+        ?string $tokenName = null,
+        PayfortPaymentOptionEnum|string|null $paymentOption = null,
+        ?string $settlementReference = null,
+        ?string $orderDescription = null,
+        ?string $statementDescriptor = null,
+        ?string $customerIp = null,
+        ?string $customerName = null,
+        ?bool $rememberMe = null,
+        ?string $phoneNumber = null,
+        ?string $returnUrl = null,
+        ?string $agreementId = null,
+        PayfortRecurringModeEnum|string|null $recurringMode = null,
+        ?string $recurringTransactionsCount = null,
+        ?string $recurringExpiryDate = null,
+        ?string $recurringDaysBetweenPayments = null,
+        array $extra = [],
+    ): array
+    {
+        if ($command instanceof PayfortPurchaseCommandEnum) {
+            $command = $command->value;
+        }
+
+        if ($paymentOption instanceof PayfortPaymentOptionEnum) {
+            $paymentOption = $paymentOption->value;
+        }
+
+        if ($recurringMode instanceof PayfortRecurringModeEnum) {
+            $recurringMode = $recurringMode->value;
+        }
+
+        return $this->signRequestPayload([
+            'command' => $command,
+            'merchant_reference' => $merchantReference,
+            'amount' => $amount,
+            'currency' => $currency,
+            'customer_email' => $customerEmail,
+            'language' => $language,
+            ...$this->filterPayload([
+                'token_name' => $tokenName,
+                'payment_option' => $paymentOption,
+                'order_description' => $orderDescription,
+                'statement_descriptor' => $statementDescriptor,
+                'customer_ip' => $customerIp,
+                'customer_name' => $customerName,
+                'remember_me' => $rememberMe === false ? false : null,
+                'phone_number' => $phoneNumber,
+                'settlement_reference' => $settlementReference,
+                'return_url' => $returnUrl,
+                'agreement_id' => $agreementId,
+                'recurring_mode' => $recurringMode,
+                'recurring_transactions_count' => $recurringTransactionsCount,
+                'recurring_expiry_date' => $recurringExpiryDate,
+                'recurring_days_between_payments' => $recurringDaysBetweenPayments,
+                ...$extra,
+            ]),
+        ]);
     }
 }
