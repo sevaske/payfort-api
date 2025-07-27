@@ -37,9 +37,8 @@ class Signature
      * selecting either the request SHA phrase or the response SHA phrase based on the
      * `requestPhrase` flag. It also retrieves the hashing algorithm from the credential.
      *
-     * @param  CredentialInterface $credential  The credential object containing SHA phrases and hashing algorithm.
+     * @param  CredentialInterface  $credential  The credential object containing SHA phrases and hashing algorithm.
      * @param  bool  $requestPhrase  Determines whether to use the request SHA phrase (true) or the response SHA phrase (false).
-     *
      * @return Signature The generated Signature instance.
      */
     public static function fromCredential(CredentialInterface $credential, bool $requestPhrase): Signature

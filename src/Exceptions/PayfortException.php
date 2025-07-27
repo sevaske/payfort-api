@@ -6,7 +6,7 @@ use Sevaske\PayfortApi\Interfaces\PayfortExceptionInterface;
 
 class PayfortException extends \Exception implements PayfortExceptionInterface
 {
-    public function __construct(string $message = "", protected array $context = [], int $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $message = '', protected array $context = [], int $code = 0, ?\Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

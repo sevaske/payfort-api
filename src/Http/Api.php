@@ -34,16 +34,15 @@ class Api implements HasCredentialInterface
     /**
      * Initialize the API request with an HTTP client and credentials.
      *
-     * @param PayfortEnvironmentEnum|string $environment The environment to make requests (production|sandbox).
-     * @param ClientInterface $httpClient The HTTP client for sending requests.
-     * @param CredentialInterface $credential The credential instance for authentication and signing requests.
+     * @param  PayfortEnvironmentEnum|string  $environment  The environment to make requests (production|sandbox).
+     * @param  ClientInterface  $httpClient  The HTTP client for sending requests.
+     * @param  CredentialInterface  $credential  The credential instance for authentication and signing requests.
      */
     public function __construct(
         PayfortEnvironmentEnum|string $environment,
-        ClientInterface $httpClient, 
+        ClientInterface $httpClient,
         CredentialInterface $credential,
-    )
-    {
+    ) {
         if (is_string($environment)) {
             $environment = PayfortEnvironmentEnum::from($environment);
         }
@@ -111,7 +110,7 @@ class Api implements HasCredentialInterface
         int $amount,
         string $currency = 'SAR',
         string $language = 'en',
-        array  $extra = [],
+        array $extra = [],
         callable|array|string|null $callback = null,
     ): mixed {
         $requestPayload = $this->signRequestPayload([
@@ -338,8 +337,7 @@ class Api implements HasCredentialInterface
         ?string $recurringDaysBetweenPayments = null,
         array $extra = [],
         callable|array|string|null $callback = null,
-    )
-    {
+    ) {
         $requestPayload = $this->prepareRedirectionPayload(
             PayfortPurchaseCommandEnum::Purchase,
             $merchantReference,
@@ -406,8 +404,7 @@ class Api implements HasCredentialInterface
         ?string $recurringDaysBetweenPayments = null,
         array $extra = [],
         callable|array|string|null $callback = null,
-    )
-    {
+    ) {
         $requestPayload = $this->prepareRedirectionPayload(
             PayfortPurchaseCommandEnum::Authorization,
             $merchantReference,
@@ -447,43 +444,34 @@ class Api implements HasCredentialInterface
     }
 
     /**
-     * @param PayfortPurchaseCommandEnum|string $command Authorization or Purchase
-     * @param string $merchantReference The merchant’s unique order number.
-     * @param int $amount The transaction’s amount. Example: 10000
-     * @param string $currency The currency of the transaction’s amount in ISO code 3.
-     * @param string $customerEmail
-     * @param string $language ONLY en|ar
-     * @param string|null $tokenName // The Token received from the Tokenization process.
-     * @param PayfortPaymentOptionEnum|string|null $paymentOption
-     * @param string|null $settlementReference The value is then passed to the acquiring bank and displayed to the
-     *     merchant in the acquirer settlement file.
-     * @param string|null $orderDescription
-     * @param string|null $statementDescriptor
-     * @param string|null $customerIp // IPv4 and IPv6 are supported.
-     * @param string|null $customerName
-     * @param bool|null $rememberMe This parameter provides you with an indication to whether to save this token for
-     *     the user based on the user selection.
-     * @param string|null $phoneNumber The customer’s phone number.
-     * @param string|null $returnUrl // The URL of the Merchant’s page that will be displayed to the customer when the
-     *     order is processed.
-     * @param string|null $agreementId // Identifier for the agreement with the payer to process payments to be used in
-     *     recurring payments.
-     * @param PayfortRecurringModeEnum|string|null $recurringMode // Indicates if the subsequent payments within the
-     *     agreement has same/different amount or unscheduled (unknown interval/amount).
-     * @param string|null $recurringTransactionsCount The number of merchant-initiated payments within the recurring
-     *     payment agreement. Required only if recurring_mode = VARIABLE or FIXED
-     * @param string|null $recurringExpiryDate // The date where the merchant needs to end the recurring, the format is
-     *     YYYY-MM-DD
-     * @param string|null $recurringDaysBetweenPayments The number of days between payments agreed with the payer under
-     *     your agreement with them.
-     * @param array $extra
-     *
-     * @return array
+     * @param  PayfortPurchaseCommandEnum|string  $command  Authorization or Purchase
+     * @param  string  $merchantReference  The merchant’s unique order number.
+     * @param  int  $amount  The transaction’s amount. Example: 10000
+     * @param  string  $currency  The currency of the transaction’s amount in ISO code 3.
+     * @param  string  $language  ONLY en|ar
+     * @param  string|null  $tokenName  // The Token received from the Tokenization process.
+     * @param  string|null  $settlementReference  The value is then passed to the acquiring bank and displayed to the
+     *                                            merchant in the acquirer settlement file.
+     * @param  string|null  $customerIp  // IPv4 and IPv6 are supported.
+     * @param  bool|null  $rememberMe  This parameter provides you with an indication to whether to save this token for
+     *                                 the user based on the user selection.
+     * @param  string|null  $phoneNumber  The customer’s phone number.
+     * @param  string|null  $returnUrl  // The URL of the Merchant’s page that will be displayed to the customer when the
+     *                                  order is processed.
+     * @param  string|null  $agreementId  // Identifier for the agreement with the payer to process payments to be used in
+     *                                    recurring payments.
+     * @param  PayfortRecurringModeEnum|string|null  $recurringMode  // Indicates if the subsequent payments within the
+     *                                                               agreement has same/different amount or unscheduled (unknown interval/amount).
+     * @param  string|null  $recurringTransactionsCount  The number of merchant-initiated payments within the recurring
+     *                                                   payment agreement. Required only if recurring_mode = VARIABLE or FIXED
+     * @param  string|null  $recurringExpiryDate  // The date where the merchant needs to end the recurring, the format is
+     *                                            YYYY-MM-DD
+     * @param  string|null  $recurringDaysBetweenPayments  The number of days between payments agreed with the payer under
+     *                                                     your agreement with them.
      *
      * @throws PayfortSignatureException
      *
      * @see https://paymentservices-reference.payfort.com/docs/api/build/index.html#authorization-purchase-request
-     *
      */
     protected function prepareRedirectionPayload(
         PayfortPurchaseCommandEnum|string $command,
@@ -508,8 +496,7 @@ class Api implements HasCredentialInterface
         ?string $recurringExpiryDate = null,
         ?string $recurringDaysBetweenPayments = null,
         array $extra = [],
-    ): array
-    {
+    ): array {
         if ($command instanceof PayfortPurchaseCommandEnum) {
             $command = $command->value;
         }

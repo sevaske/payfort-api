@@ -14,7 +14,7 @@ enum PayfortPaymentOptionEnum: string
 
     case NAPS = 'NAPS'; // (for purchase operations only)
 
-    case KNET = 'KNET'; //(for purchase operations only)
+    case KNET = 'KNET'; // (for purchase operations only)
 
     case OMANNET = 'OMANNET'; // (for purchase operations and ECI E-commerce only)
 
