@@ -19,7 +19,7 @@ class Response implements PayfortResponseInterface
     /**
      * Constructs the ApiResponse object by parsing a PSR-7 response into attributes.
      *
-     * @param ResponseInterface|array $response The original PSR-7 HTTP response OR array.
+     * @param  ResponseInterface|array  $response  The original PSR-7 HTTP response OR array.
      *
      * @throws PayfortResponseException If the response body cannot be parsed as valid JSON.
      */
@@ -37,9 +37,9 @@ class Response implements PayfortResponseInterface
     /**
      * Parses the PSR-7 response and returns an associative array of its JSON contents.
      *
-     * @param ResponseInterface $response The HTTP response to parse.
-     *
+     * @param  ResponseInterface  $response  The HTTP response to parse.
      * @return array The decoded JSON content as an array.
+     *
      * @throws PayfortResponseException If JSON decoding fails.
      */
     public static function parse(ResponseInterface $response): array

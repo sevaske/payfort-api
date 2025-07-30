@@ -2,6 +2,7 @@
 
 namespace Sevaske\PayfortApi\Http\Responses;
 
+use Sevaske\PayfortApi\Enums\PayfortMessageEnum;
 use Sevaske\PayfortApi\Enums\PayfortStatusEnum;
 use Sevaske\PayfortApi\Http\Response;
 
@@ -28,5 +29,14 @@ class RefundResponse extends Response
     public function currency(): ?string
     {
         return $this->getOptionalAttribute('currency');
+    }
+
+    public function declined(): ?bool
+    {
+        if (! $responseCode = $this->getOptionalAttribute('response_code')) {
+            return null;
+        }
+
+        return $responseCode === PayfortStatusEnum::RefundFailed->value.PayfortMessageEnum::TransactionDeclined->value;
     }
 }

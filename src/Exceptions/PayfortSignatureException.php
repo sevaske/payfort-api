@@ -12,8 +12,7 @@ class PayfortSignatureException extends PayfortException
         ?string $shaPhrase,
         ?string $shaType = 'sha256',
         ?\Throwable $previous = null
-    )
-    {
+    ) {
         parent::__construct(
             $message,
             [

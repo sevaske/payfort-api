@@ -9,11 +9,11 @@ use ReflectionFunction;
 use ReflectionMethod;
 use Sevaske\PayfortApi\Enums\PayfortStatusEnum;
 use Sevaske\PayfortApi\Exceptions\PayfortException;
-use Sevaske\PayfortApi\Http\Response;
-use Sevaske\PayfortApi\Interfaces\PayfortResponseInterface;
-use Sevaske\PayfortApi\Interfaces\HasCredentialInterface;
 use Sevaske\PayfortApi\Exceptions\PayfortRequestException;
 use Sevaske\PayfortApi\Exceptions\PayfortSignatureException;
+use Sevaske\PayfortApi\Http\Response;
+use Sevaske\PayfortApi\Interfaces\HasCredentialInterface;
+use Sevaske\PayfortApi\Interfaces\PayfortResponseInterface;
 use Sevaske\PayfortApi\Signature;
 use Throwable;
 
@@ -32,8 +32,6 @@ trait RequestBuilder
 
     /**
      * HTTP client instance for sending requests.
-     *
-     * @var ClientInterface
      */
     private ClientInterface $httpClient;
 
@@ -50,10 +48,9 @@ trait RequestBuilder
     /**
      * Send a raw request without processing the response.
      *
-     * @param array $options Additional request options.
-     * @param ?string $uri The endpoint URI. Pass null to set by default: $this->baseUrl.'FortAPI/paymentApi'
-     * @param string $method The HTTP method (e.g., GET, POST).
-     *
+     * @param  array  $options  Additional request options.
+     * @param  ?string  $uri  The endpoint URI. Pass null to set by default: $this->baseUrl.'FortAPI/paymentApi'
+     * @param  string  $method  The HTTP method (e.g., GET, POST).
      * @return ResponseInterface The raw API response.
      *
      * @throws PayfortRequestException If an error occurs during the request.
@@ -85,9 +82,8 @@ trait RequestBuilder
     /**
      * Send an API request and process the response.
      *
-     * @param array $payload The request payload.
-     * @param callable|array|string|null $callback The callback to execute.
-     *
+     * @param  array  $payload  The request payload.
+     * @param  callable|array|string|null  $callback  The callback to execute.
      * @return mixed The response data OR when you pass a callback, you must return something inside.
      *
      * @throws PayfortSignatureException If signature validation fails.
@@ -118,7 +114,7 @@ trait RequestBuilder
      * If the class implements HasCredentialContract, credentials
      * are automatically added to the request.
      *
-     * @param array $payload The initial request payload.
+     * @param  array  $payload  The initial request payload.
      * @return array The modified payload with credentials and signature.
      *
      * @throws PayfortSignatureException If signature generation fails.
@@ -143,9 +139,9 @@ trait RequestBuilder
     /**
      * Calls a given request callback function.
      *
-     * @param callable|array|string $callback The callback to execute.
-     * @param PayfortResponseInterface|ResponseInterface|array $response The response payload.
-     * @param array $request The request payload.
+     * @param  callable|array|string  $callback  The callback to execute.
+     * @param  PayfortResponseInterface|ResponseInterface|array  $response  The response payload.
+     * @param  array  $request  The request payload.
      *
      * @throws PayfortRequestException If the callback is invalid or execution fails.
      */
@@ -153,18 +149,17 @@ trait RequestBuilder
         callable|array|string $callback,
         PayfortResponseInterface|ResponseInterface|array $response,
         array $request,
-    ): mixed
-    {
+    ): mixed {
         // if it's an array, ensure it is a valid class-method pair
         if (is_array($callback)) {
-            if (! isset($callback[0], $callback[1]) || !method_exists($callback[0], $callback[1])) {
-                throw new PayfortRequestException("Invalid callback provided. Must be a valid class-method pair.");
+            if (! isset($callback[0], $callback[1]) || ! method_exists($callback[0], $callback[1])) {
+                throw new PayfortRequestException('Invalid callback provided. Must be a valid class-method pair.');
             }
         }
 
         // ensure the callback is callable
         if (! is_callable($callback)) {
-            throw new PayfortRequestException("Invalid callback provided. Must be callable.");
+            throw new PayfortRequestException('Invalid callback provided. Must be callable.');
         }
 
         try {
@@ -177,14 +172,14 @@ trait RequestBuilder
 
             // ensure the callback accepts at least two parameters
             if ($reflection->getNumberOfParameters() < 2) {
-                throw new PayfortRequestException("Callback must accept at least 2 parameters: (payload, response).");
+                throw new PayfortRequestException('Callback must accept at least 2 parameters: (payload, response).');
             }
 
             // execute the callback
             return $callback($response, $request);
         } catch (Throwable $e) {
             throw new PayfortRequestException(
-                'Callback execution failed: ' . $e->getMessage(),
+                'Callback execution failed: '.$e->getMessage(),
                 [
                     'callback' => is_array($callback) ? implode('::', $callback) : 'Closure',
                 ],

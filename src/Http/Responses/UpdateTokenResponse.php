@@ -10,7 +10,6 @@ use Sevaske\PayfortApi\Http\Response;
  */
 class UpdateTokenResponse extends Response
 {
-
     public function success(): bool
     {
         return $this->getOptionalAttribute('status') === PayfortStatusEnum::TokenUpdatedSuccessfully->value;
@@ -23,7 +22,7 @@ class UpdateTokenResponse extends Response
 
     public function tokenStatus(): ?bool
     {
-        return match($this->getOptionalAttribute('token_status')) {
+        return match ($this->getOptionalAttribute('token_status')) {
             'ACTIVE' => true,
             'INACTIVE' => false,
             'default' => null,
@@ -37,9 +36,9 @@ class UpdateTokenResponse extends Response
 
     /**
      * @return string|null The masked credit card’s number.
-     *  Only the MEEZA payment option takes 19 digits card number.
-     *  AMEX payment option takes 15 digits card number.
-     *  Otherwise, they take 16 digits card number
+     *                     Only the MEEZA payment option takes 19 digits card number.
+     *                     AMEX payment option takes 15 digits card number.
+     *                     Otherwise, they take 16 digits card number
      */
     public function cardNumber(): ?string
     {
@@ -56,7 +55,7 @@ class UpdateTokenResponse extends Response
 
     /**
      * @return string|null The first 6 digits of the card number.
-     *  If the card number for MEEZA was of length 19 then the card bin will be the first 8 digits.
+     *                     If the card number for MEEZA was of length 19 then the card bin will be the first 8 digits.
      */
     public function cardBin(): ?string
     {

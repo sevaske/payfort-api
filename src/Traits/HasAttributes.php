@@ -69,9 +69,9 @@ trait HasAttributes
     /**
      * Retrieves an attribute value.
      *
-     * @param string $key The attribute key.
-     *
+     * @param  string  $key  The attribute key.
      * @return mixed The attribute value.
+     *
      * @throws UndefinedAttributeException
      */
     protected function getAttribute(string $key): mixed
@@ -88,8 +88,7 @@ trait HasAttributes
     /**
      * Retrieves an attribute value or null if undefined.
      *
-     * @param string $key The attribute key.
-     *
+     * @param  string  $key  The attribute key.
      * @return mixed|null The attribute value or null if not found.
      */
     protected function getOptionalAttribute(string $key): mixed
@@ -100,9 +99,9 @@ trait HasAttributes
     /**
      * Retrieves an integer attribute value.
      *
-     * @param string $key The attribute key.
-     *
+     * @param  string  $key  The attribute key.
      * @return int|null The integer value or null if not found.
+     *
      * @throws UndefinedAttributeException
      */
     protected function getAttributeAsInt(string $key): ?int
@@ -119,7 +118,7 @@ trait HasAttributes
     /**
      * Checks whether the given offset exists in the internal attributes.
      *
-     * @param mixed $offset The attribute key.
+     * @param  mixed  $offset  The attribute key.
      * @return bool True if set, false otherwise.
      */
     public function offsetExists(mixed $offset): bool
@@ -130,7 +129,7 @@ trait HasAttributes
     /**
      * Retrieves a value by array key (offset).
      *
-     * @param mixed $offset The attribute key.
+     * @param  mixed  $offset  The attribute key.
      * @return mixed|null The attribute value, or null if not set.
      */
     public function offsetGet(mixed $offset): mixed
@@ -141,8 +140,8 @@ trait HasAttributes
     /**
      * Sets a value by array key (offset).
      *
-     * @param mixed $offset The attribute key.
-     * @param mixed $value The value to set.
+     * @param  mixed  $offset  The attribute key.
+     * @param  mixed  $value  The value to set.
      *
      * @throws ReadOnlyAttributesException If attributes are marked as read-only.
      */
@@ -158,7 +157,7 @@ trait HasAttributes
     /**
      * Unsets a value by array key (offset).
      *
-     * @param mixed $offset The attribute key.
+     * @param  mixed  $offset  The attribute key.
      *
      * @throws ReadOnlyAttributesException If attributes are marked as read-only.
      */

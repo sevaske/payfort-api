@@ -27,9 +27,9 @@ class CreateTokenResponse extends Response
 
     /**
      * @return string|null The masked credit card’s number.
-     *  Only the MEEZA payment option takes 19 digits card number.
-     *  AMEX payment option takes 15 digits card number.
-     *  Otherwise, they take 16 digits card number
+     *                     Only the MEEZA payment option takes 19 digits card number.
+     *                     AMEX payment option takes 15 digits card number.
+     *                     Otherwise, they take 16 digits card number
      */
     public function cardNumber(): ?string
     {

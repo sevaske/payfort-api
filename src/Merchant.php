@@ -11,7 +11,7 @@ use Sevaske\PayfortApi\Interfaces\HasCredentialInterface;
 use Sevaske\PayfortApi\Interfaces\MerchantInterface;
 use Sevaske\PayfortApi\Traits\HasCredential;
 
-class Merchant implements MerchantInterface, HasCredentialInterface
+class Merchant implements HasCredentialInterface, MerchantInterface
 {
     use HasCredential;
 
@@ -22,19 +22,18 @@ class Merchant implements MerchantInterface, HasCredentialInterface
     /**
      * Initialize the API request with an HTTP client and credentials.
      *
-     * @param PayfortEnvironmentEnum|string $environment The environment to make requests (production|sandbox).
-     * @param ClientInterface $httpClient The HTTP client for sending requests.
-     * @param CredentialInterface $credential The credential instance for authentication and signing requests.
+     * @param  PayfortEnvironmentEnum|string  $environment  The environment to make requests (production|sandbox).
+     * @param  ClientInterface  $httpClient  The HTTP client for sending requests.
+     * @param  CredentialInterface  $credential  The credential instance for authentication and signing requests.
      */
     public function __construct(
         PayfortEnvironmentEnum|string $environment,
         ClientInterface $httpClient,
         CredentialInterface $credential,
-    )
-    {
+    ) {
         $this->credential = $credential;
         $this->api = new Api($environment, $httpClient, $credential);
-        $this->redirection = new Redirection();
+        $this->redirection = new Redirection;
     }
 
     public function api(): Api
